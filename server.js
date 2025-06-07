@@ -1,21 +1,24 @@
+require('dotenv').config(); // <-- load .env file
+
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
-const eventRoutes = require('./routes/eventRoutes');
 const authRoutes = require('./routes/authRoutes');
-
-dotenv.config();
+const eventRoutes = require('./routes/eventRoutes');
 
 const app = express();
 app.use(express.json());
 
-
 app.use('/api/auth', authRoutes);
-
 app.use('/api', eventRoutes);
+
+const PORT = process.env.PORT || 3000;
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
-    app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
   })
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+  });
